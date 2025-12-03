@@ -1,8 +1,6 @@
 services:
   - type: web
-    name: tapetes-croche
+    name: croche-site
     env: python
-    region: oregon
-    plan: free
     buildCommand: "pip install -r requirements.txt"
     startCommand: "gunicorn app:app"

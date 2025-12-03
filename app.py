@@ -17,7 +17,6 @@ oauth.register(
     client_id="SEU_CLIENT_ID",
     client_secret="SEU_CLIENT_SECRET",
     access_token_url="https://oauth2.googleapis.com/token",
-    access_token_params=None,
     authorize_url="https://accounts.google.com/o/oauth2/auth",
     authorize_params={"prompt": "select_account"},
     api_base_url="https://www.googleapis.com/oauth2/v1/",
@@ -178,11 +177,10 @@ def novo_produto():
     return redirect(url_for("painel_adm"))
 
 
-# -------------------------
+# ------------------------ INICIALIZAÇÃO ------------------------
 
+# O Render usa o Gunicorn, então não coloque app.run() duas vezes
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
-    app.run(debug=True)
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run()
