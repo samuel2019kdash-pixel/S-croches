@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tapetes de Crochê — Loja</title>
+  <style>
+    :root{
+      --marrom-escuro:#8d5f39; --marrom-medio:#a06f45; --bege:#f3ebe2;
+    }
+    body{font-family:Inter,Arial,Helvetica,sans-serif;margin:0;background:var(--bege);color:#222}
+    header{background:var(--marrom-medio);color:white;padding:20px 16px;text-align:center}
+    .container{max-width:1100px;margin:24px auto;padding:0 16px}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+    a.btn{display:inline-block;padding:8px 14px;border-radius:8px;text-decoration:none;color:white;background:var(--marrom-escuro)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:18px}
+    .card{background:#fff;border-radius:12px;padding:14px;box-shadow:0 6px 18px rgba(0,0,0,0.08)}
+    .card img{width:100%;border-radius:8px;height:180px;object-fit:cover}
+    .card h3{margin:10px 0 6px}
+    .meta{color:#666;font-size:14px}
+    footer{background:var(--marrom-medio);color:#fff;padding:18px;text-align:center;margin-top:32px}
+    .login-area{display:flex;gap:8px;align-items:center}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Tapetes de Crochê — Loja & Encomendas</h1>
+  </header>
+
+  <div class="container">
+    <div class="topbar">
+      <div>
+        <strong>Bem-vindo{{ ' ' + user.name if user else '' }}</strong><br>
+        <small>Encomendas feitas à mão • Qualidade e carinho</small>
+      </div>
+
+      <div class="login-area">
+        {% if user %}
+          <span style="margin-right:8px;">{{ user.email }}</span>
+          <a class="btn" href="{{ url_for('logout') }}">Sair</a>
+        {% else %}
+          <a class="btn" href="{{ url_for('login') }}">Entrar com Google</a>
+        {% endif %}
+        <!-- Se for admin, link para painel -->
+        {% if user and user.email == 'denizeetiago1992@gmail.com' %}
+          <a class="btn" href="{{ url_for('painel_adm') }}" style="background:#5b3f29">Painel ADM</a>
+        {% endif %}
+      </div>
+    </div>
+
+    <h2 style="margin-top:20px">Produtos</h2>
+    <div class="grid">
+      {% for p in products %}
+      <div class="card fade-in">
+        <img src="{{ p.image_url or 'https://images.unsplash.com/photo-1584917865442-de89df76aff8' }}" alt="{{ p.name }}">
+        <h3>{{ p.name }}</h3>
+        <p class="meta">{{ p.description or 'Tapete artesanal' }}</p>
+        <p style="font-weight:700;margin:8px 0">R$ {{ '%.2f'|format(p.price) }}</p>
+
+        {% if user %}
+          <a class="btn" href="{{ url_for('fazer_pedido', id=p.id) }}">Fazer Pedido</a>
+        {% else %}
+          <small>Faça login para pedir.</small>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+
+    <section style="margin-top:28px">
+      <h2>Como funciona</h2>
+      <ol>
+        <li>Faça login com sua conta Google.</li>
+        <li>Escolha o tapete desejado e clique em <em>Fazer Pedido</em>.</li>
+        <li>A ADM (denizeetiago1992@gmail.com) avaliará o pedido e aprovará ou rejeitará.</li>
+        <li>Se aprovado, você receberá instruções para pagamento e envio.</li>
+      </ol>
+    </section>
+
+    <section style="margin-top:20px">
+      <h2>Contato</h2>
+      <p>Email: denizeetiago1992@gmail.com • WhatsApp: +55 18 99811-2136</p>
+    </section>
+  </div>
+
+  <footer>
+    © 2025 Tapetes de Crochê — Criado para você
+  </footer>
+</body>
+</html>
+

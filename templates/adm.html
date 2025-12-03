@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Painel ADM — Tapetes de Crochê</title>
+  <style>
+    :root{--bg:#f6f2ec;--accent:#8d5f39;--muted:#666}
+    body{font-family:Inter,Arial,sans-serif;margin:0;background:var(--bg);color:#222}
+    header{background:var(--accent);color:white;padding:18px 16px;text-align:center}
+    .container{max-width:1100px;margin:20px auto;padding:0 16px}
+    .grid{display:grid;grid-template-columns:2fr 1fr;gap:18px}
+    .card{background:#fff;border-radius:12px;padding:16px;box-shadow:0 8px 22px rgba(0,0,0,.06)}
+    h2{margin-top:0}
+    table{width:100%;border-collapse:collapse;font-size:14px}
+    th,td{padding:10px;text-align:left;border-bottom:1px solid #eee}
+    form input, form textarea{width:100%;padding:8px;margin:8px 0;border-radius:6px;border:1px solid #ddd}
+    .btn{display:inline-block;padding:8px 12px;border-radius:8px;color:white;text-decoration:none;background:var(--accent)}
+    .actions a{margin-right:6px}
+    footer{background:var(--accent);color:white;padding:16px;text-align:center;margin-top:20px}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Painel ADM / Vendedor</h1>
+    <div style="margin-top:6px">Usuário: {{ session['user']['email'] }}</div>
+  </header>
+
+  <div class="container">
+    <div class="grid">
+      <!-- Coluna principal: Pedidos -->
+      <div class="card">
+        <h2>Pedidos</h2>
+        <table>
+          <thead><tr><th>#</th><th>Cliente</th><th>Produto</th><th>Status</th><th>Ações</th></tr></thead>
+          <tbody>
+            {% for pedido in pedidos %}
+            <tr>
+              <td>{{ pedido.id }}</td>
+              <td>{{ pedido.user.email }}</td>
+              <td>{{ pedido.product.name }}</td>
+              <td>{{ pedido.status }}</td>
+              <td class="actions">
+                {% if pedido.status != 'Aprovado' %}
+                  <a class="btn" style="background:#37a66b" href="{{ url_for('aprovar_pedido', id=pedido.id) }}">Aprovar</a>
+                {% endif %}
+                {% if pedido.status != 'Rejeitado' %}
+                  <a class="btn" style="background:#c94a4a" href="{{ url_for('rejeitar_pedido', id=pedido.id) }}">Rejeitar</a>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Coluna lateral: Criar produto -->
+      <div class="card">
+        <h2>Cadastrar novo tapete</h2>
+        <form action="{{ url_for('novo_produto') }}" method="post">
+          <label>Nome</label>
+          <input type="text" name="nome" required>
+          <label>Descrição</label>
+          <textarea name="descricao" rows="4"></textarea>
+          <label>Preço (ex: 65.00)</label>
+          <input type="text" name="preco" required>
+          <label>URL da imagem</label>
+          <input type="text" name="imagem" placeholder="https://...">
+          <button class="btn" type="submit" style="width:100%;margin-top:8px">Criar Produto</button>
+        </form>
+
+        <hr style="margin:14px 0">
+
+        <h3>Produtos cadastrados</h3>
+        <ul style="padding-left:16px">
+          {% for prod in produtos %}
+            <li><strong>{{ prod.name }}</strong><br><small style="color:var(--muted)">R$ {{ '%.2f'|format(prod.price) }}</small></li>
+          {% endfor %}
+        </ul>
+
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Painel administrado por denizeetiago1992@gmail.com — © 2025
+  </footer>
+</body>
+</html>
